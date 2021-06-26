@@ -1,0 +1,22 @@
+﻿    input[disabled] {
+        outline: 1px solid red;
+        border: 2px dotted #00f;
+        display: block;
+        background: #ff0000;
+    }
+
+    i[class~="fa-edit"]:hover
+    {
+        color: blue;
+        cursor: pointer;
+    }
+
+i[class~="fa-trash"]:hover {
+    color: red;
+    cursor: pointer;
+}
+
+.pull-right
+{
+    float: right !important;
+}

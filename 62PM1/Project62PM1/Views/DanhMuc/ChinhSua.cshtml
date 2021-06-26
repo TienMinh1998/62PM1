@@ -1,0 +1,225 @@
+﻿
+@{
+    ViewBag.Title = "Chỉnh sửa DM";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>Chỉnh sửa Danh mục</h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="#">Trang chủ</a></li>
+                    <li class="breadcrumb-item active">Chỉnh sửa Danh mucj</li>
+                </ol>
+            </div>
+        </div>
+    </div><!-- /.container-fluid -->
+</section>
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <!-- left column -->
+            <div class="col-md-12">
+                <!-- general form elements -->
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Thông tin Danh mục</h3>
+                    </div>
+                    <!-- /.card-header -->
+                    <!-- form start -->
+                    <form id="act_form" method="post" action="#" enctype="multipart/form-data">
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label>Tiêu đề Danh mục <span class="text-danger"> *</span></label>
+                                <input type="text" class="form-control" id="txt_TieuDe" name="txt_TieuDe" placeholder="Tiêu đề Danh mục">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Đường dẫn đến Danh mục <span class="text-danger"> *</span></label>
+                                <input type="text" class="form-control" id="txt_URL" name="txt_URL" placeholder="Đường dẫn đến Danh mục">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Danh mục Cha</label>
+                                <select id="cbx_Id_DMCha" name="cbx_Id_DMCha" class="form-control select2" style="width: 100%;">
+                                    <option value="1">Danh mục 1</option>
+                                    <option value="2">Danh mục 2</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Mô tả</label>
+                                <textarea class="form-control" id="txt_MoTa" name="txt_MoTa"> </textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Giới thiệu</label>
+                                <textarea class="form-control" id="txt_GioiThieu" name="txt_GioiThieu"> </textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label>ID<span class="text-danger"> *</span></label>
+                                <input type="hidden" class="form-control" id="txt_id" name="txt_id" placeholder="Id của dòng">
+                            </div>
+
+                            <div class="row">
+                                <div class="form-group col-sm-6">
+                                    <label>Thứ tự hiển thị trên Main Menu</label>
+                                    <input type="number" class="form-control" id="txt_MainMenuOrder" name="txt_MainMenuOrder">
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" id="chx_isShowMainMenu" name="chx_isShowMainMenu">
+                                        <label class="form-check-label" for="chx_isShowMainMenu">Hiển thị lên Main Menu</label>
+                                    </div>
+                                </div>
+
+                                <div class="form-group col-sm-6">
+                                    <label>Thứ tự hiển thị trên Header Menu</label>
+                                    <input type="number" class="form-control" id="txt_MainHeadOrder" name="txt_MainHeadOrder">
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" id="chx_isShowHeadMenu" name="chx_isShowHeadMenu">
+                                        <label class="form-check-label" for="chx_isShowHeadMenu">Hiển thị lên Header Menu</label>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <!-- /.card-body -->
+
+                        <div class="card-footer">
+                            <button type="button" class="btn btn-primary pull-right" id="btn_Add">Cập Nhập</button>
+                        </div>
+                    </form>
+                </div>
+                <!-- /.card -->
+            </div>
+            <!--/.col (left) -->
+            
+        </div>
+        <!-- /.row -->
+    </div><!-- /.container-fluid -->
+</section>
+<!-- /.content -->
+
+<script>
+    $(document).ready(function () {
+        toastr.options = {
+            "closeButton": false,
+            "debug": false,
+            "newestOnTop": false,
+            "progressBar": false,
+            "positionClass": "toast-top-right",
+            "preventDuplicates": false,
+            "onclick": null,
+            "showDuration": "300",
+            "hideDuration": "1000",
+            "timeOut": "5000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+        }
+        toastr["success"]("I do not think that means what you think it means.")
+        $(".select2").select2();
+
+        //bắn ajax để get info of danh mục
+        //lấy về id của danh mục từ url
+        var url = new URL(window.location.href);
+        var id_dm = url.searchParams.get("id");
+
+        $.ajax({
+            url: "/DanhMuc/GetDMInfo",
+            type: "post",
+            data: { id_dm: id_dm },
+            success: function (result) {
+                if (result.indexOf("Lỗi") >= 0) {
+                    alert(result);
+                }
+                else {
+                    var dm = JSON.parse(result);
+                    //field dữ liệu danh mục lên các input tương ứng trên UI
+                    $("#txt_TieuDe").val(dm.TieuDe);
+                    $("#txt_URL").val(dm.URL);
+                    $("#txt_MoTa").val(dm.MoTa);
+                    $("#txt_GioiThieu").val(dm.GioiThieu);
+                    $("#txt_MainMenuOrder").val(dm.MainMenu_Order);
+                    $("#txt_MainHeadOrder").val(dm.HeadMenu_Order);
+                    $("#txt_id").val(id_dm);
+                    if (dm.is_ShowMainMenu==1) {
+                        $("#chx_isShowMainMenu").attr("checked", "checked");
+                    }
+                    if (dm.is_ShowHeadeMenu == 1) {
+                        $("#chx_isShowHeadMenu").attr("checked", "checked");
+                    }
+                    //xử lý riêng cho trường hợp selected danh mục cha
+                    $.ajax({
+                        url: "/DanhMuc/GetListDanhMuc",
+                        type: "post",
+                        success: function (result) {
+                            //document.getElementById("tbody_dsDanhMuc").innerHTML = result;
+                            var str = "<option value='-1'> Danh mục cấp cao nhất </option> ";
+                            if (result != "-1") {
+                                var dsdm = JSON.parse(result);
+
+                                for (var i = 0; i < dsdm.length; i++) {
+                                    if (dsdm[i].Id==id_dm) {
+                                        continue; //loại bỏ trường hợp nó bằng
+                                    }
+                                    str += "<option value='" + dsdm[i].Id + "' ";
+                                    if (dsdm[i].Id == dm.Id_Cha) {
+                                        str += " selected ";
+                                    }
+                                    str += "> " + dsdm[i].TieuDe + "</option > ";
+                                }
+                            }
+                            $("#cbx_Id_DMCha").html(str);
+                        }
+                    });
+                }
+            }
+        });
+
+        
+
+        $("#btn_Add").click(function () {
+
+          
+            //validate dữ liệu
+            var tieude = $("#txt_TieuDe").val();
+            var url1 = $("#txt_URL").val();
+            var url = new URL(window.location.href);
+            var id = url.searchParams.get("id");
+            if (tieude == "" || url1 == "" ) {
+                toastr["warning"]("Bạn Phải Điền Đủ Dữ Liệu");
+            }
+            else {
+                var form = $('#act_form')[0];
+                var data = new FormData(form);
+           
+                    $.ajax({
+                        type: "POST",
+                        enctype: 'multipart/form-data',
+                        url: '/DanhMuc/ChinhSuaDanhMuc',
+                        data: data, // $("#form_act").serialize(),
+                    processData: false,
+                    contentType: false,
+                    cache: false,
+                    success: function (response) {
+                        toastr["success"](response)
+                    },
+                    error: function (rs) {
+                        console.log(rs);
+                        //toastr["error"]("Có lỗi xảy ra trong quá trình tạo mới Khách hàng. Vui lòng thử lại sau");
+                    }
+                });
+            }
+        });
+    })
+</script>

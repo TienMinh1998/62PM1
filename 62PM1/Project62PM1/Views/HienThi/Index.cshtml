@@ -1,0 +1,58 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/LAyOutHienThi.cshtml";
+}
+
+<h2><u>Đây là Trang Chứa Các Khóa Học</u></h2>
+
+<table class="table table-bordered">
+    <thead class="thead-light">
+        <tr>
+            <th style="width: 10px">#</th>
+            <th>ID khóa học</th>
+            <th>Tên Khóa Học</th>
+            <th>Nội Dung</th>
+            <th>Links Khóa Học<a ></th>
+            
+            <th style="width: 130px; text-align:center">Thao tác</th>
+        </tr>
+    </thead>
+    <tbody id="tbody_dsDanhMuc">
+    </tbody>
+</table>
+
+<script>
+
+    $(document).ready(function () {
+        $.ajax({
+            url: "/DanhMuc/GetlistKhoaHoc",
+            type: "post",
+            success: function (result) {
+
+                var str = "";
+                if (result == "-1") {
+                    str = "<tr> <td colspan='9' style='color: red; font-weight: bold;'> Danh Sách Đang Trống </td> </tr>";
+                } else {
+                    var dsdm = JSON.parse(result);
+                    str += "<tr>";
+                    for (var i = 0; i < dsdm.length; i++) {
+                        str += "<td>" + (i + 1) + "</td>"
+                        str += "<td>" + dsdm[i].Id + "</td>\
+                        <td>" + dsdm[i].name + "</td>\
+                        <td>" + dsdm[i].noidung + "</td>\
+                         <td><a target='_blank;' href='"+ dsdm[i].linkskhoahoc + "'><u style='color:blue;'>Bấm vào đây để học</u></td>";
+
+                        str += " <td><i class='fa fa-fw fa-edit' ></i> \
+                        <i class='fa fa-fw fa-trash' ></i> </td>";
+                        str += "</tr>";
+                    }
+
+                }
+                $("#tbody_dsDanhMuc").html(str);
+            }
+        });
+
+
+    });
+  </script>

@@ -1,0 +1,7 @@
+﻿body {
+}
+.banner {
+    background-color: seagreen;
+    background-image: url("~/Display/images/tieude.jpg");
+    height:350px;
+}

@@ -1,0 +1,128 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/LAyOutHienThi.cshtml";
+}
+
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>Đăng Nhập.</h1>
+            </div>
+            
+        </div>
+    </div><!-- /.container-fluid -->
+</section>
+
+<!--Đăng NhẬp-->
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <!-- left column -->
+            <div class="col-md-6">
+                <!-- jquery validation -->
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Nhập tài khoản và mật khẩu<small>, không được để trống...</small></h3>
+                    </div>
+
+                    <form id="act_form" method="post" action="#" enctype="multipart/form-data">
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">Tài Khoản</label>
+                                <input type="text" name="txt_tk" class="form-control light" id="txt_tk" style="background-color:#f8f9fa; color:black" placeholder="Nhập tài khoản">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="exampleInputPassword1">Mật Khẩu</label>
+                                <input type="password"  name="txt_mk" class="form-control " style="background-color:#f8f9fa; width:100%; color:black" id="txt_mk" placeholder="Nhập mật khẩu.">
+                            </div>
+
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" name="terms" class="custom-control-input" id="exampleCheck1">
+                                <label class="custom-control-label" for="exampleCheck1">Tôi đồng ý, <a href="#">Bấm vô để đăng kí!</a>.</label>
+                            </div>
+
+                        </div>
+
+
+                    </form>
+                    <button id="btn_dangnhap" name="btn_dangnhap" class="btn btn-info">Click me To Login</button>
+                </div>
+
+            </div>
+         
+        </div>
+ 
+    </div>
+</section>
+<script>
+
+    $("#btn_dangnhap").click(function () {
+        //validate dữ liệu
+        var tk = $("#txt_tk").val();
+        var mk = $("#txt_mk").val();
+        if (tk == "" || mk == "") {
+            toastr["warning"]("Bạn phải nhập đủ các trường...");
+           
+        } else {
+            // trong này là nó đúng thì đẩy dữ liệu về sever : 
+            // lấy dữ liệu ném nào biến Data
+            var form = $('#act_form')[0];
+            var data = new FormData(form);
+            // Đẩy về
+            $.ajax({
+                type: "POST",
+                enctype: 'multipart/form-data',
+                url: '/Login/LoginSystem',
+                data: data, // $("#form_act").serialize(),
+                processData: false,
+                contentType: false,
+                cache: false,
+                success: function (response) {
+                    if (response=="True") {
+                        toastr["success"]("Đăng Nhập Thành Công");
+                        // chuyển hướng trang
+                        $.ajax({
+                        success: function (r) {
+                            window.location.href = '/DanhMuc';
+                        }, error: function (x, e) {
+                            //     alert(x.responseText);
+                        }
+                        });
+                        // end chuyển hướng
+                    } else {
+                        toastr["warning"]("Tài khoản hoặc mật khẩu không đúng!!!");
+                    }
+                    
+                },
+                error: function (rs) {
+                    console.log(rs);
+                    //toastr["error"]("Có lỗi xảy ra trong quá trình tạo mới Khách hàng. Vui lòng thử lại sau");
+                }
+            });
+            // KẾt thúc đẩy
+
+        }
+
+    });
+
+    toastr.options = {
+        "closeButton": false,
+        "debug": false,
+        "newestOnTop": false,
+        "progressBar": false,
+        "positionClass": "toast-top-center",
+        "preventDuplicates": false,
+        "onclick": null,
+        "showDuration": "500",
+        "hideDuration": "500",
+        "timeOut": "1000",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+    }
+</script>

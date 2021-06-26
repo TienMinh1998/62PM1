@@ -1,0 +1,186 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Biểu Đồ Thống Kê </h2>
+<section class="content">
+    <div class="container-fluid">
+      
+
+        <div class="row">
+
+            <!-- /.col -->
+            <div class="col-md-12">
+                <!-- Bar chart -->
+                <div class="card card-primary card-outline">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="far fa-chart-bar"></i>
+                            Quản Lý Tài Chính cá nhân:
+                        </h3>
+
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                            <button type="button" class="btn btn-tool" data-card-widget="remove">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div id="bar-chart" style="height: 300px;"></div>
+                    </div>
+                    <!-- /.card-body-->
+                </div>
+
+            </div>
+            <!--Copy vào đây-->
+
+
+            <div class="col-md-6">
+                <div class="card card-success">
+                    <div class="card-header">
+                        <h3 class="card-title">...Nhập Liệu Thông Tin Của Biểu Đồ...</h3>
+                    </div>
+                    <div class="card-body">
+                        <form id="act_form" method="post" action="#" enctype="multipart/form-data">
+                            <input class="form-control form-control-lg" type="text" id="txt_ngay" name="txt_ngay" placeholder="Nhập Ngày">
+                            <br>
+                            <input class="form-control" type="text" placeholder="...Nhập giá trị của ngày đó..." id="txt_giatri" name="txt_giatri">
+                            <br>
+                           
+                        </form>
+                        <button class="btn btn-danger" id="btn_Add" name="btn_Add" style="float:right">Thêm THông Tin</button>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+            </div>
+            <!--End vào đây-->
+
+
+        </div>
+        <!-- /.row -->
+    </div><!-- /.container-fluid -->
+</section>
+
+<script src="../../dist/js/adminlte.min.js"></script>
+<!-- FLOT CHARTS -->
+<script src="../../plugins/flot/jquery.flot.js"></script>
+<!-- FLOT RESIZE PLUGIN - allows the chart to redraw when the window is resized -->
+<script src="../../plugins/flot/plugins/jquery.flot.resize.js"></script>
+<!-- FLOT PIE PLUGIN - also used to draw donut charts -->
+<script src="../../plugins/flot/plugins/jquery.flot.pie.js"></script>
+<!-- AdminLTE for demo purposes -->
+<script src="../../dist/js/demo.js"></script>
+<!-- Page specific script -->
+<script>
+    $(document).ready(function () {
+        LoadDataBase();
+    });
+    function LoadDataBase() {
+        var chart_data = {
+            data: [[1, 100000]],
+            bars: { show: true }
+        }
+        var mangID = new Array();
+        var mangGiaTri = new Array();
+        $(function () {
+            // lấy dữ liệu
+
+            $.ajax({
+                url: "/Chart/GetSeriChart",
+                type: "post",
+                success: function (result) {
+
+                    var str = "";
+                    if (result == "-1") {
+                        str = "<tr> <td colspan='9' style='color: red; font-weight: bold;'> Danh Sách Đang Trống </td> </tr>";
+                    } else {
+                        var dsdm = JSON.parse(result);
+
+                        for (var i = 0; i < dsdm.length; i++) {
+                            mangID.push(dsdm[i].ID);
+                            mangGiaTri.push(dsdm[i].GiaTri);
+
+                        }
+                        var a = []
+                        for (var i = 0; i < mangID.length; i++) {
+                            chart_data.data.push([mangID[i], mangGiaTri[i]]);
+                            a.push([mangID[i], dsdm[i].Name]);
+                        }
+                        // vẽ luôn
+
+                        $.plot('#bar-chart', [chart_data], {
+                            grid: {
+                                borderWidth: 1,
+                                borderColor: '#f3f3f3',
+                                tickColor: '#f3f3f3'
+                            },
+                            series: {
+                                bars: {
+                                    show: true, barWidth: 0.5, align: 'center',
+                                },
+                            },
+                            colors: ['#28a745'],
+                            xaxis: {
+                                ticks: a
+                            }
+                        })
+                    }
+                    $("#tbody_dsDanhMuc").html(str);
+                }
+            });
+            // kết thúc lấy dữ liệu
+
+
+
+
+
+
+
+        })
+        function labelFormatter(label, series) {
+            return '<div style="font-size:13px; text-align:center; padding:2px; color: #fff; font-weight: 600;">'
+                + label
+                + '<br>'
+                + Math.round(series.percent) + '%</div>'
+        }
+    }
+    // Thêm mới
+    $("#btn_Add").click(function () {
+        //validate dữ liệu
+        var giatri = $("#txt_giatri").val();
+        var ngay = $("#txt_ngay").val();
+
+        if (ngay == "" || giatri == "") {
+            alert("Vui lòng nhập đủ các trường...");
+        }
+        else {
+            var form = $('#act_form')[0];
+            var data = new FormData(form);
+            $.ajax({
+                type: "POST",
+                enctype: 'multipart/form-data',
+                url: '/Chart/ThemMoiDanhMuc',
+                data: data, // $("#form_act").serialize(),
+                processData: false,
+                contentType: false,
+                cache: false,
+                success: function (response) {
+
+                    toastr["success"](response);
+                    LoadDataBase();
+                    
+                    
+                },
+                error: function (rs) {
+                    console.log(rs);
+                    //toastr["error"]("Có lỗi xảy ra trong quá trình tạo mới Khách hàng. Vui lòng thử lại sau");
+                }
+            });
+        }
+    });
+</script>

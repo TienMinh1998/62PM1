@@ -1,0 +1,145 @@
+﻿
+@{
+    ViewBag.Title = "ViewDanhMucDaXoa";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<section class="content">
+    <div class="container-fluid">
+        @*//Phần nội dung của trang html*@
+
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Danh sách Danh mục</h3>
+                <a href="~/DanhMuc/Them" class="pull-right btn btn-primary">Thêm mới</a>
+                <a href="#" id="btn_delete" class="btn btn-primary">Test</a>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body">
+                <table class="table table-bordered">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th style="width: 10px">#</th>
+                            <th>Tiêu đề</th>
+                            <th>URL</th>
+                            <th>Danh mục cha</th>
+                            <th>Hiển thị trên Main Menu</th>
+                            <th>Thứ tự trên Main Menu</th>
+                            <th>Hiển thị trên Header Menu</th>
+                            <th>Thứ tự trên Header Menu</th>
+                            <th style="width: 90px; text-align:center">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody_dsDanhMuc">
+                    </tbody>
+                </table>
+            </div>
+            <!-- /.card-body -->
+            <div class="card-footer clearfix">
+                <ul class="pagination pagination-sm m-0 float-right">
+                    <li class="page-item"><a class="page-link" href="#">&laquo;</a></li>
+                    <li class="page-item"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item"><a class="page-link" href="#">&raquo;</a></li>
+                </ul>
+            </div>
+        </div>
+    </div><!-- /.container-fluid -->
+</section>
+
+<script>
+    function delete_click(id) {
+      $.ajax({
+            url: "/DanhMuc/KhoiPhucDanhMuc",
+          type: "post",
+          data: {id : id},
+           success: function (result) {
+               toastr["success"](result);
+                LoadDataBase();
+                }
+
+        });
+    }
+    function LoadDataBase() {
+        $.ajax({
+            url: "/DanhMuc/GetListDanhMucDaXoa",
+            type: "post",
+            success: function (result) {
+                //document.getElementById("tbody_dsDanhMuc").innerHTML = result;
+                var str = "";
+                if (result == "-1") {
+                    str = "<tr> <td colspan='9' style='color: red; font-weight: bold;'> Danh sách danh mục đang trống </td> </tr>";
+                }
+                else {
+                    var dsdm = JSON.parse(result);
+
+                    for (var i = 0; i < dsdm.length; i++) {
+                        var extentData = "";
+                        if (dsdm[i].ExtentData != null && dsdm[i].ExtentData != "" && dsdm[i].ExtentData != "undefined") {
+                            extentData = JSON.parse(dsdm[i].ExtentData);
+                        }
+                        str += "<tr>";
+                        str += "<td>" + (i + 1) + "</td>\
+                                <td> " + dsdm[i].TieuDe + "</td>\
+                                <td> <a href='" + dsdm[i].URL + "' > Link </a> </td>\
+                                <td> " + extentData["TieuDeDanhMucCha"] + "</td>\
+                                <td>\
+                                     <div class='custom-checkbox custom-control'>\
+                                        <input type='checkbox' id='checkbox_" + dsdm[i].Id + "' disabled ";
+                        if (dsdm[i].is_ShowMainMenu == 1) {
+                            str += " checked ";
+                        }
+                        str += "class='custom-control-input'>\
+                                        <label class='custom-control-label' for='checkbox_" + dsdm[i].Id + "'>&nbsp;</label>\
+                                </div>\
+                            </td>";
+                        str += "<td> " + dsdm[i].MainMenu_Order + "</td>\
+                        <td>\
+                                     <div class='custom-checkbox custom-control'>\
+                                        <input type='checkbox' id='checkbox_" + dsdm[i].Id + "' disabled ";
+                        if (dsdm[i].is_ShowHeadeMenu == 1) {
+                            str += " checked ";
+                        }
+                        str += "class='custom-control-input'>\
+                                        <label class='custom-control-label' for='checkbox_" + dsdm[i].Id + "'>&nbsp;</label>\
+                                </div>\
+                            </td>\
+                        <td> "  + dsdm[i].HeadMenu_Order + "</td> <td>\
+                   <button class='btn btn-warning' id='btn_delete_'"+ dsdm[i].Id + " onclick='delete_click(" + dsdm[i].Id + ")'><i class='fa fa-fw fa-undo'></i></button> \
+                        </td>";
+                        str += "</tr>";
+                    }
+                }
+                $("#tbody_dsDanhMuc").html(str);
+            }
+        });
+    }
+
+
+    $(document).ready(function () {
+        LoadDataBase();
+
+
+    });
+    //End Doccument.Readys
+    toastr.options = {
+        "closeButton": false,
+        "debug": false,
+        "newestOnTop": false,
+        "progressBar": false,
+        "positionClass": "toast-top-center",
+        "preventDuplicates": false,
+        "onclick": null,
+        "showDuration": "300",
+        "hideDuration": "1000",
+        "timeOut": "2000",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+    }
+
+</script>
+<!-- /.content -->

@@ -1,0 +1,208 @@
+﻿
+@{
+    ViewBag.Title = "QuanLyNhatKi";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">Quản lý danh mục</h1>
+            </div><!-- /.col -->
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="#">Home</a></li>
+                    <li class="breadcrumb-item active">Quản lý danh mục</li>
+                </ol>
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+</div>
+<!-- /.content-header -->
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        @*//Phần nội dung của trang html*@
+
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Danh sách Danh mục</h3>
+                <a href="~/DanhMuc/Them" class="pull-right btn btn-primary">Thêm mới</a>
+                <a href="#" id="btn_delete" class="btn btn-primary">Test</a>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body">
+                <select id="txt_luachon" onchange="change(this)" name="txt_luachon" class="form-control select2">
+                    <option id="op_2"> 2 Bản ghi</option>
+                    <option id="op_3" value="3" name="op_3"> 3 bản ghi</option>
+                    <option id="op_4" value="4" name="op_4"> 4 bản ghi</option>
+                    <option id="op_5" name="op_4" value="5"> 5 bản ghi</option>
+                </select>
+                <table class="table table-bordered">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th style="width: 10px">Number</th>
+                            <th>ID Công việc</th>
+                            <th>Tên của công việc</th>
+                            <th>Nội Dung</th>
+                            <th>Mô tả về công việc</th>
+                            <th>Thời Gian Hoàn thành</th>
+                            <th>Status</th>
+                            <th style="width: 130px; text-align:center">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody_dsDanhMuc">
+                    </tbody>
+                </table>
+            </div>
+            <!-- /.card-body -->
+            <div class="card-footer clearfix">
+                <ul class="pagination pagination-sm m-0 float-right">
+                    <li class="page-item"><a class="page-link" href="#">&laquo;</a></li>
+                    <li class="page-item"><btn class="page-link" id="btn_prv" name="btn_prv" href="#">1</btn></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><button class="page-link" id="btn_nextpage" name="btn_nextpage" href="#">3</button></li>
+                    <li class="page-item"><a class="page-link" href="#">&raquo;</a></li>
+                </ul>
+            </div>
+        </div>
+    </div><!-- /.container-fluid -->
+</section>
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <!-- left column -->
+            <div class="col-md-12">
+                <!-- general form elements -->
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Homework is Done :((</h3>
+                    </div>
+                    <!-- /.card-header -->
+                    <!-- form start -->
+                    <form id="act_form" method="post" action="#" enctype="multipart/form-data">
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label>Tên của công việc<span class="text-danger"> *</span></label>
+                                <input type="text" class="form-control" id="txt_tenkhoahoc" name="txt_tenkhoahoc" placeholder="Nhập tên khóa học bạn muốn thêm">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Mô tả về công việc đã làm<span class="text-danger"> *</span></label>
+                                <input type="text" class="form-control" id="txt_duongdan" name="txt_duongdan" placeholder="Đường dẫn đến khóa học của bạn">
+                            </div>
+
+
+
+                            <div class="form-group">
+                                <label>Nội Dung của công việc</label>
+                                <textarea class="form-control" id="txt_MoTa" name="txt_MoTa" placeholder="Nhập mô tả về khóa học của bạn..."> </textarea>
+                            </div>
+
+
+                            <div class="form-group col-sm-12">
+
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="chx_isShowHeadMenu" name="chx_isShowHeadMenu">
+                                    <label class="form-check-label" for="chx_isShowHeadMenu">Công Khai Khóa học</label>
+                                </div>
+                            </div>
+
+                        </div>
+                        <
+                        <div class="card-footer">
+                            <button type="button" class="btn btn-danger pull-right" id="btn_Add">Xác nhận thêm</button>
+                        </div>
+                    </form>
+                </div>
+                <!-- /.card -->
+            </div>
+            <!--/.col (left) -->
+
+        </div>
+        <!-- /.row -->
+    </div><!-- /.container-fluid -->
+</section>
+
+<script>
+    function Loaddatabase() {
+        $.ajax({
+            url: "/DanhMuc/GetlistNhatKi",
+            type: "post",
+            success: function (result) {
+
+                var str = "";
+                if (result == "-1") {
+                    str = "<tr> <td colspan='9' style='color: red; font-weight: bold;'> Danh Sách Đang Trống </td> </tr>";
+                } else {
+                    var dsdm = JSON.parse(result);
+                    str += "<tr>";
+                    for (var i = 0; i < dsdm.length; i++) {
+                        str += "<td>" + (i + 1) + "</td>"
+                        str += "<td>" + dsdm[i].Id + "</td>\
+                        <td>" + dsdm[i].name + "</td>\
+                        <td>" + dsdm[i].noidung + "</td>\
+                         <td><a href='"+ dsdm[i].linkskhoahoc + "'>" + dsdm[i].mota + "</td>\
+                        <td>"+ dsdm[i].ngaytao + " </td>\
+                            <td>\
+              <div class='custom-checkbox custom-control'>\
+                                        <input type='checkbox' id='checkbox_" + dsdm[i].Id + "' disabled ";
+                        if (dsdm[i].isdone == 1) {
+                            str += " checked ";
+                        }
+                        str += "class='custom-control-input'>\
+                                        <label class='custom-control-label' for='checkbox_" + dsdm[i].Id + "'>&nbsp;</label>\
+                                </div>\
+                            </td>";
+
+                        str += " <td> <a href='/DanhMuc/ChinhSuanhatki?id=" + dsdm[i].Id + "'><i class='fa fa-fw fa-edit' ></i></a> \
+                        <i class='fa fa-fw fa-trash' ></i> </td>";
+                        str += "</tr>";
+                    }
+
+                }
+                $("#tbody_dsDanhMuc").html(str);
+            }
+        });
+    }
+    $(document).ready(function () {
+       
+        Loaddatabase();
+
+    });
+
+    $("#btn_Add").click(function () {
+        //validate dữ liệu
+        var noidung = $("#txt_tenkhoahoc").val();
+        var mota = $("#txt_duongdan").val();
+
+        if (noidung == "" || mota == "") {
+            alert("Vui lòng điền đầy đủ các mục có dấu * màu đỏ");
+        }
+        else {
+            var form = $('#act_form')[0];
+            var data = new FormData(form);
+            $.ajax({
+                type: "POST",
+                enctype: 'multipart/form-data',
+                url: '/DanhMuc/ThemMoiNhatKi',
+                data: data, // $("#form_act").serialize(),
+                processData: false,
+                contentType: false,
+                cache: false,
+                success: function (response) {
+                 
+                    toastr["success"](response);
+                    Loaddatabase();
+                },
+                error: function (rs) {
+                    console.log(rs);
+                    //toastr["error"]("Có lỗi xảy ra trong quá trình tạo mới Khách hàng. Vui lòng thử lại sau");
+                }
+            });
+        }
+    });
+</script>
+

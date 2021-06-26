@@ -1,0 +1,98 @@
+﻿<?xml version="1.0" encoding="utf-8"?><Database Name="NewsMngDB" Class="DatabaseDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+  <Connection Mode="WebSettings" ConnectionString="Data Source=.\sqlexpress;Initial Catalog=NewsMngDB;Persist Security Info=True;User ID=sa" SettingsObjectName="System.Configuration.ConfigurationManager.ConnectionStrings" SettingsPropertyName="NewsMngDBConnectionString1" Provider="System.Data.SqlClient" />
+  <Table Name="dbo.tbl_TinTuc_DanhMuc" Member="tbl_TinTuc_DanhMucs">
+    <Type Name="tbl_TinTuc_DanhMuc">
+      <Column Name="Id" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="DanhMucId" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
+      <Column Name="TinTucId" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="Create_at" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="LastEdit_at" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="Delete_at" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="isDelete" Type="System.Byte" DbType="TinyInt" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.tbl_TinTuc" Member="tbl_TinTucs">
+    <Type Name="tbl_TinTuc">
+      <Column Name="Id" Type="System.String" DbType="NChar(10) NOT NULL" CanBeNull="false" />
+      <Column Name="TieuDe" Type="System.String" DbType="NVarChar(500)" CanBeNull="true" />
+      <Column Name="MoTa" Type="System.String" DbType="NText" CanBeNull="true" UpdateCheck="Never" />
+      <Column Name="NoiDung" Type="System.String" DbType="NText" CanBeNull="true" UpdateCheck="Never" />
+      <Column Name="ThoiGianHienThi" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="target" Type="System.String" DbType="NVarChar(20)" CanBeNull="true" />
+      <Column Name="isSendMail" Type="System.Byte" DbType="TinyInt" CanBeNull="true" />
+      <Column Name="Create_at" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="LastEdit_at" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="Delete_at" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="isDelete" Type="System.Byte" DbType="TinyInt" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.tbl_DanhMuc" Member="tbl_DanhMucs">
+    <Type Name="tbl_DanhMuc">
+      <Column Name="Id" Type="System.Int64" DbType="BigInt NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="TieuDe" Type="System.String" DbType="NVarChar(1000)" CanBeNull="true" />
+      <Column Name="URL" Type="System.String" DbType="NText" CanBeNull="true" UpdateCheck="Never" />
+      <Column Name="Id_Cha" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
+      <Column Name="MoTa" Type="System.String" DbType="NText" CanBeNull="true" UpdateCheck="Never" />
+      <Column Name="GioiThieu" Type="System.String" DbType="NText" CanBeNull="true" UpdateCheck="Never" />
+      <Column Name="MainMenu_Order" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="is_ShowMainMenu" Type="System.Byte" DbType="TinyInt" CanBeNull="true" />
+      <Column Name="HeadMenu_Order" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="is_ShowHeadeMenu" Type="System.Byte" DbType="TinyInt" CanBeNull="true" />
+      <Column Name="Create_at" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="LastEdit_at" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="Delete_at" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="isDelete" Type="System.Byte" DbType="TinyInt" CanBeNull="true" />
+      <Column Name="ExtentData" Type="System.String" DbType="NText" CanBeNull="true" UpdateCheck="Never" />
+    </Type>
+  </Table>
+  <Table Name="dbo.tbl_cmd" Member="tbl_cmds">
+    <Type Name="tbl_cmd">
+      <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="name" Type="System.String" DbType="VarChar(250)" CanBeNull="true" />
+      <Column Name="mota" Type="System.String" DbType="NText" CanBeNull="true" UpdateCheck="Never" />
+      <Column Name="create_at" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.tbl_khoahoc" Member="tbl_khoahocs">
+    <Type Name="tbl_khoahoc">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="name" Type="System.String" DbType="NVarChar(500)" CanBeNull="true" />
+      <Column Name="noidung" Type="System.String" DbType="NText" CanBeNull="true" UpdateCheck="Never" />
+      <Column Name="linkskhoahoc" Type="System.String" DbType="NText" CanBeNull="true" UpdateCheck="Never" />
+      <Column Name="ngaytao" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="ishow" Type="System.Byte" DbType="TinyInt" CanBeNull="true" />
+      <Column Name="isdone" Type="System.Byte" DbType="TinyInt" CanBeNull="true" />
+      <Column Name="isdelete" Type="System.Byte" DbType="TinyInt" CanBeNull="true" />
+      <Column Name="Editat" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="deleteat" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.tbl_User" Member="tbl_Users">
+    <Type Name="tbl_User">
+      <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="tk" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="mk" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.tbl_chart" Member="tbl_charts">
+    <Type Name="tbl_chart">
+      <Column Name="ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NChar(50)" CanBeNull="true" />
+      <Column Name="GiaTri" Type="System.Int32" DbType="Int" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.tbl_nhatki" Member="tbl_nhatkis">
+    <Type Name="tbl_nhatki">
+      <Column Name="Id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="name" Type="System.String" DbType="NVarChar(500)" CanBeNull="true" />
+      <Column Name="noidung" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="mota" Type="System.String" DbType="NVarChar(MAX)" CanBeNull="true" />
+      <Column Name="ngaytao" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="ishow" Type="System.Byte" DbType="TinyInt" CanBeNull="true" />
+      <Column Name="isdone" Type="System.Byte" DbType="TinyInt" CanBeNull="true" />
+      <Column Name="isdelete" Type="System.Byte" DbType="TinyInt" CanBeNull="true" />
+      <Column Name="Editat" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="deleteat" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+    </Type>
+  </Table>
+</Database>

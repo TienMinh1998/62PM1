@@ -1,0 +1,117 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>index</title>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+    <div>
+        <form id="act_form" method="post" action="" enctype="multipart/form-data">
+            <div class="card-body">
+                <div class="form-group">
+                    <label>Tiêu đề Danh mục <span class="text-danger"> *</span></label>
+                    <input type="text" class="form-control" id="txt_TieuDe" name="txt_TieuDe" placeholder="Tiêu đề Danh mục">
+                </div>
+
+                <div class="form-group">
+                    <label>Đường dẫn đến Danh mục <span class="text-danger"> *</span></label>
+                    <input type="text" class="form-control" id="txt_URL" placeholder="Đường dẫn đến Danh mục">
+                </div>
+
+                <div class="form-group">
+                    <label>Danh mục Cha</label>
+                    <select id="cbx_Id_DMCha" class="form-control select2" style="width: 100%;">
+                        <option value="1">Danh mục 1</option>
+                        <option value="2">Danh mục 2</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Mô tả</label>
+                    <textarea class="form-control" id="txt_MoTa"> </textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Giới thiệu</label>
+                    <textarea class="form-control" id="txt_GioiThieu"> </textarea>
+                </div>
+
+                <div class="row">
+                    <div class="form-group col-sm-6">
+                        <label>Thứ tự hiển thị trên Main Menu</label>
+                        <input type="number" class="form-control" id="txt_MainMenuOrder">
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" id="chx_isShowMainMenu">
+                            <label class="form-check-label" for="chx_isShowMainMenu">Hiển thị lên Main Menu</label>
+                        </div>
+                    </div>
+
+                    <div class="form-group col-sm-6">
+                        <label>Thứ tự hiển thị trên Header Menu</label>
+                        <input type="number" class="form-control" id="txt_MainHeadOrder">
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" id="chx_isShowHeadMenu">
+                            <label class="form-check-label" for="chx_isShowHeadMenu">Hiển thị lên Header Menu</label>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <!-- /.card-body -->
+
+            <div class="card-footer">
+                <button type="button" class="btn btn-primary pull-right" id="btn_Add">Thêm mới</button>
+            </div>
+        </form>
+    </div>
+    <script>
+        $(document).ready(function () {
+            $("#btn_Add").click(function () {
+                //validate dữ liệu
+                var tieude = $("#txt_TieuDe").val();
+                var url = $("#txt_URL").val();
+
+                if (tieude == "" || url == "") {
+                    alert("Vui lòng điền đầy đủ các mục có dấu * màu đỏ");
+                }
+                else {
+                    var form = $('#act_form')[0];
+                    var data = new FormData(form);
+
+                    $.ajax({
+                        type: "POST",
+                        url: '/DanhMuc/ThemMoiDanhMuc',
+                        data: data, // $("#form_act").serialize(),
+                        processData: false,
+                        contentType: false,
+                        cache: false,
+                        success: function (response) {
+                            //var rs = JSON.parse(response);
+                            //if (rs.ErrCode == 2) {
+                            //    toastr["info"](rs.ErrDescription);
+                            //    LoadInfoData($("#txt_NhomPAKTCode").val());
+                            //}
+                            //else {
+                            //    toastr["error"](rs.ErrDescription);
+                            //}
+                            //LoadPageUnBlockUI();
+                        },
+                        error: function (rs) {
+                            //toastr["error"]("Có lỗi xảy ra trong quá trình Lập Hồ sơ Quyết toán. Vui lòng thử lại sau");
+                            //LoadPageUnBlockUI();
+                        }
+                    });
+                }
+            });
+        })
+    </script>
+</body>
+</html>

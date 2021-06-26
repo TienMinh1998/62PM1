@@ -1,0 +1,237 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@*<div class="custom-checkbox custom-control">
+    <input type="checkbox" id="checkbox_01" disabled checked class="custom-control-input">
+    <label class="custom-control-label" for="checkbox_01">&nbsp;</label>
+</div>*@
+
+<!-- Content Header (Page header) -->
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">Quản lý danh mục</h1>
+            </div><!-- /.col -->
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="#">Home</a></li>
+                    <li class="breadcrumb-item active">Quản lý danh mục</li>
+                </ol>
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+</div>
+<!-- /.content-header -->
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        @*//Phần nội dung của trang html*@
+        <form id="act_form" method="post" action="#" enctype="multipart/form-data">
+            <input type="hidden" id="txt_currpage" name="txt_currpage" value="1" /> 
+            <input type="hidden" id="txt_rdonpage" name="txt_rdonpage" value="2" />
+        </form>
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Danh sách Danh mục</h3>
+                <a href="~/DanhMuc/Them" class="pull-right btn btn-primary">Thêm mới</a>
+                <a href="#" id="btn_delete" class="btn btn-primary">Test</a>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body">
+                <select id="txt_luachon" onchange="change(this)" name="txt_luachon" class="form-control select2" >
+                    <option id="op_2"> 2 Bản ghi</option>
+                    <option id="op_3" value="3" name="op_3"> 3 bản ghi</option>
+                    <option id="op_4" value="4" name="op_4"> 4 bản ghi</option>
+                    <option id="op_5" name="op_4" value="5"> 5 bản ghi</option>
+                </select>
+                <div class="form-row">
+              
+                        <input class="form-control pull-right mr-3" type="text" id="txt_search_value" name="txt_search_value" style="width:30%"/>
+                        <select class="select2 select2 select2-blue pull-right mr-3" id="cbx_search_type" name="cbx_search_type">
+                            <option value="0">Tiêu đề</option>
+                            <option value="1">Danh Mục</option>
+                            <option value="2">Hiển Thị Trên Main Menu</option>
+                            <option value="3">Hiểu Thị Trên headmenu</option>
+
+                        </select>
+                        <button id="btn_search" class="btn btn-light pull-right ml-3" ><i class="fa fa-search"></i></button>
+          
+                </div>
+                <table class="table table-bordered" >
+                    <thead class="thead-dark">
+                        <tr>
+                            <th style="width: 10px">#</th>
+                            <th>Tiêu đề</th>
+                            <th>URL</th>
+                            <th>Danh mục cha</th>
+                            <th>Hiển thị trên Main Menu</th>
+                            <th>Thứ tự trên Main Menu</th>
+                            <th>Hiển thị trên Header Menu</th>
+                            <th>Thứ tự trên Header Menu</th>
+                            <th style="width: 130px; text-align:center" >Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody_dsDanhMuc">
+                    </tbody>
+                </table>
+            </div>
+            <!-- /.card-body -->
+            <div class="card-footer clearfix">
+                <ul class="pagination pagination-sm m-0 float-right">
+                    <li class="page-item"><a class="page-link" href="#">&laquo;</a></li>
+                    <li class="page-item"><btn class="page-link" id="btn_prv" name="btn_prv" href="#">1</btn></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><button class="page-link" id="btn_nextpage" name="btn_nextpage" href="#">3</button></li>
+                    <li class="page-item"><a class="page-link" href="#">&raquo;</a></li>
+                </ul>
+            </div>
+        </div>
+    </div><!-- /.container-fluid -->
+</section>
+
+<script>
+    function delete_click(id) {
+      $.ajax({
+            url: "/DanhMuc/XoaDanhMuc",
+          type: "post",
+         
+          data: { id: id },  
+           success: function (result) {
+               toastr["success"](result);
+                LoadDataBase();
+                }
+         
+        });
+    }
+
+
+    function LoadDataBase() {
+
+        var form = $('#act_form')[0];
+        var data = new FormData(form);
+        $.ajax({
+            url: "/DanhMuc/GetListDanhMuc",
+            type: "post",
+            enctype: 'multipart/form-data',
+            data: data,
+            processData: false,
+            contentType: false,
+            cache: false,
+            success: function (result) {
+                //document.getElementById("tbody_dsDanhMuc").innerHTML = result;
+                var str = "";
+                if (result == "-1") {
+                    str = "<tr> <td colspan='9' style='color: red; font-weight: bold;'> Danh sách danh mục đang trống </td> </tr>";
+                }
+                else {
+                    var dsdm = JSON.parse(result);
+
+                    for (var i = 0; i < dsdm.length; i++) {
+                        var extentData = "";
+                        if (dsdm[i].ExtentData != null && dsdm[i].ExtentData != "" && dsdm[i].ExtentData != "undefined") {
+                            extentData = JSON.parse(dsdm[i].ExtentData);
+                        }
+                        str += "<tr>";
+                        str += "<td>" + (i + 1) + "</td>\
+                                <td> " + dsdm[i].TieuDe + "</td>\
+                                <td> <a href='" + dsdm[i].URL + "' > Link </a> </td>\
+                                <td> " + extentData["TieuDeDanhMucCha"] + "</td>\
+                                <td>\
+                                     <div class='custom-checkbox custom-control'>\
+                                        <input type='checkbox' id='checkbox_" + dsdm[i].Id + "' disabled ";
+                        if (dsdm[i].is_ShowMainMenu == 1) {
+                            str += " checked ";
+                        }
+                        str += "class='custom-control-input'>\
+                                        <label class='custom-control-label' for='checkbox_" + dsdm[i].Id + "'>&nbsp;</label>\
+                                </div>\
+                            </td>";
+                        str += "<td> " + dsdm[i].MainMenu_Order + "</td>\
+                        <td>\
+                                     <div class='custom-checkbox custom-control'>\
+                                        <input type='checkbox' id='checkbox_" + dsdm[i].Id + "' disabled ";
+                        if (dsdm[i].is_ShowHeadeMenu == 1) {
+                            str += " checked ";
+                        }
+                        str += "class='custom-control-input'>\
+                                        <label class='custom-control-label' for='checkbox_" + dsdm[i].Id + "'>&nbsp;</label>\
+                                </div>\
+                            </td>\
+                        <td> "  + dsdm[i].HeadMenu_Order + "</td> <td>\
+                        <a class='btn btn-info' href='/DanhMuc/ChinhSua?id="+ dsdm[i].Id + "'> <i class='fa fa-fw fa-edit' ></i> </a> \
+                   <button class='btn btn-danger' id='btn_delete_'"+ dsdm[i].Id + " onclick='delete_click(" + dsdm[i].Id + ")'><i class='fa fa-fw fa-backspace'></i></button> \
+                        </td>";
+                        str += "</tr>";
+                    }
+                }
+                $("#tbody_dsDanhMuc").html(str);
+            }
+        });
+    }
+
+
+    $(document).ready(function () {
+        $(".select2").select2
+        LoadDataBase();
+        $("#btn_nextpage").click(function () {
+            var currpage = $("#txt_currpage").val();
+                currpage =  Number(currpage) + 1;
+            $("#txt_currpage").val(currpage);
+            LoadDataBase();
+        })
+
+        $("#btn_prv").click(function () {
+            var curr_page = $("#txt_currpage").val();
+            curr_page = Number(curr_page) - 1;
+            $("#txt_currpage").val(curr_page);
+            LoadDataBase();
+            var a = $("txt_luachon").select().val();
+            alert(a);
+        })
+        $("#op_4").select(function () {
+            alert("abc");
+        })
+     
+    });
+    //End Doccument.Readys
+    toastr.options = {
+        "closeButton": false,
+        "debug": false,
+        "newestOnTop": false,
+        "progressBar": false,
+        "positionClass": "toast-top-center",
+        "preventDuplicates": false,
+        "onclick": null,
+        "showDuration": "300",
+        "hideDuration": "1000",
+        "timeOut": "2000",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+    }
+    function change(obj) {
+        var value = obj.value;
+        if (value === '') {
+            alert("Chua chon");
+        }
+        else if (value === '2') {
+            $("#txt_rdonpage").val(2);
+            LoadDataBase();
+        }
+        else if (value === '5') {
+            $("#txt_rdonpage").val(5);
+            LoadDataBase();
+        }
+        else if (value === '3') {
+            $("#txt_rdonpage").val(3);
+            LoadDataBase();
+        }
+    }
+</script>
+<!-- /.content -->
